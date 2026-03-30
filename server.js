@@ -30,28 +30,32 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // CORS configuration - Allow all origins for development, restrict in production
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'https://royal-goa-ride-backend-production.up.railway.app',
+  'https://your-frontend-domain.com' // replace with your real prod frontend URL
+];
+
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
 
-    // Allow localhost for development
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      return callback(null, true);
-    }
-
-    // Allow Railway deployment
-    if (origin.includes('railway.app')) {
-      return callback(null, true);
-    }
-
-    // Allow all origins in development
+    // In development, allow localhost and Railway preview domains
     if (process.env.NODE_ENV !== 'production') {
+      if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('railway.app')) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'), false);
+    }
+
+    // Production: only allow exact whitelisted origins
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
 
-    // In production, you might want to restrict origins
-    callback(null, true);
+    callback(new Error(`Origin ${origin} not allowed by CORS`), false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
