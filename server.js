@@ -34,7 +34,8 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   'https://royal-goa-ride-backend-production.up.railway.app',
-  'https://your-frontend-domain.com' // replace with your real prod frontend URL
+  'https://sayedshoaib22.github.io',   // ✅ ADD THIS LINE
+  'https://your-frontend-domain.com'
 ];
 
 const corsOptions = {
